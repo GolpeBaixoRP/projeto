@@ -27,6 +27,7 @@ class DiskManager:
             # Verifica se as chaves essenciais existem antes de criar o modelo
             number = disk_data.get("Number", None)
             friendly_name = disk_data.get("FriendlyName", "Desconhecido")
+            serial_number = disk_data.get("SerialNumber", "UNKNOWN")
             partition_style = disk_data.get("PartitionStyle", "Não definido")
             bus_type = disk_data.get("BusType", "Não especificado")
             is_boot = disk_data.get("IsBoot", False)
@@ -41,6 +42,7 @@ class DiskManager:
             model = DiskModel(
                 number=number,
                 friendly_name=friendly_name,
+                serial_number=serial_number,
                 partition_style=partition_style,
                 bus_type=bus_type,
                 is_boot=is_boot,

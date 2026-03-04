@@ -1,9 +1,9 @@
 import json
 import os
-import time
 from utils.logger import setup_logger
 from core.disk_manager import DiskManager
 from core.operation_controller import OperationController
+from utils.forensic_audit import ForensicAuditTrail
 
 logger = setup_logger()
 
@@ -15,6 +15,7 @@ class SystemOrchestrator:
     def __init__(self):
         self.disk_manager = DiskManager()
         self.controller = OperationController()
+        self.audit = ForensicAuditTrail()
 
     def save_checkpoint(self, state):
         with open(CHECKPOINT_FILE, "w", encoding="utf-8") as f:
@@ -28,54 +29,54 @@ class SystemOrchestrator:
             return json.load(f)
 
     def execute_pipeline(self, disk, filesystem):
-
         try:
             logger.info("Pipeline iniciado")
-
             checkpoint = {
                 "disk": disk.number,
                 "filesystem": filesystem,
-                "stage": "START"
+                "stage": "VALIDATE",
             }
-
             self.save_checkpoint(checkpoint)
+            self.audit.record("PIPELINE_STAGE", checkpoint)
 
-            # 1️⃣ Preparar e formatar disco
-            result = self.controller.format_disk(disk, filesystem)
+            self.controller.select_disk(disk.number)
 
-            checkpoint["stage"] = "FORMAT_DONE"
+            checkpoint["stage"] = "LOCK"
             self.save_checkpoint(checkpoint)
+            self.audit.record("PIPELINE_STAGE", checkpoint)
 
-            # 2️⃣ Validar resultado
-            if not result:
+            result = self.controller.execute_full_format(filesystem)
+
+            checkpoint["stage"] = "VERIFY"
+            self.save_checkpoint(checkpoint)
+            self.audit.record("PIPELINE_STAGE", checkpoint)
+
+            if not result or result.get("Status") != "COMPLETED":
                 raise RuntimeError("Formatter retornou falha")
 
-            checkpoint["stage"] = "VALIDATION_DONE"
+            checkpoint["stage"] = "COMMIT"
             self.save_checkpoint(checkpoint)
+            self.audit.record("PIPELINE_STAGE", checkpoint)
+
+            checkpoint["stage"] = "RELEASE"
+            self.save_checkpoint(checkpoint)
+            self.audit.record("PIPELINE_STAGE", checkpoint)
 
             logger.info("Pipeline finalizado com sucesso")
-
-            # Remove checkpoint ao final
             if os.path.exists(CHECKPOINT_FILE):
                 os.remove(CHECKPOINT_FILE)
-
             return True
 
         except Exception as e:
-
             logger.error(f"Pipeline falhou: {e}")
-
+            self.audit.record("PIPELINE_FAILURE", {"disk": getattr(disk, 'number', None), "error": str(e)})
             self.recovery_procedure()
-
             return False
 
     def recovery_procedure(self):
-
         logger.warning("Recovery procedure ativado")
-
         checkpoint = self.load_checkpoint()
 
         if checkpoint:
             logger.info(f"Recuperando estado: {checkpoint}")
-
-        # Aqui você pode adicionar lógica de recovery real
+            self.audit.record("PIPELINE_RECOVERY", checkpoint)
