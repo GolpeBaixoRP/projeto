@@ -39,6 +39,39 @@ def safe_run_json(command, elevated=True, timeout=30):
         time.sleep(0.3)
 
 
+def wait_for_drive_letter(disk_number, timeout=20):
+    start = time.time()
+
+    while True:
+        letter_command = f"""
+$letter = Get-Partition -DiskNumber {disk_number} -ErrorAction SilentlyContinue |
+    Where-Object {{ $_.DriveLetter }} |
+    Select-Object -ExpandProperty DriveLetter -First 1
+
+$output = @{{
+    Output = $letter
+    Success = $true
+}}
+
+$output | ConvertTo-Json
+"""
+
+        try:
+            letter_data = safe_run_json(letter_command, elevated=True, timeout=5)
+        except TimeoutError:
+            letter_data = {}
+
+        drive_letter = str(letter_data.get("Output", "")).strip()
+
+        if drive_letter:
+            return drive_letter
+
+        if time.time() - start > timeout:
+            raise RuntimeError("Falha ao obter letra da unidade.")
+
+        time.sleep(0.4)
+
+
 # ============================================================
 # Real Deterministic Format Service
 # ============================================================
@@ -96,7 +129,13 @@ $partition = New-Partition `
     -UseMaximumSize `
     -AssignDriveLetter
 
-$letter = ($partition | Get-Volume).DriveLetter
+$letter = ($partition | Get-Volume -ErrorAction SilentlyContinue).DriveLetter
+
+if (-not $letter) {{
+    $letter = Get-Partition -DiskNumber {disk.number} -ErrorAction SilentlyContinue |
+        Where-Object {{ $_.DriveLetter }} |
+        Select-Object -ExpandProperty DriveLetter -First 1
+}}
 
 $output = @{{
     Output = $letter
@@ -108,10 +147,13 @@ $output | ConvertTo-Json
 
         partition_data = safe_run_json(partition_command, elevated=True)
 
-        drive_letter = partition_data.get("Output", "").strip()
+        drive_letter = str(partition_data.get("Output", "")).strip()
 
         if not drive_letter:
-            raise RuntimeError("Falha ao obter letra da unidade.")
+            logger.warning(
+                "Letra da unidade ainda indisponível após criação da partição. Iniciando polling."
+            )
+            drive_letter = wait_for_drive_letter(disk.number)
 
         logger.info(f"Unidade atribuída: {drive_letter}:")
 
