@@ -5,6 +5,7 @@ from typing import List, Optional
 class DiskModel:
     number: int
     friendly_name: str
+    serial_number: str
     partition_style: str
     bus_type: str
     is_boot: bool

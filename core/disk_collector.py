@@ -1,82 +1,63 @@
-import json
-from utils.powershell_runner import run_powershell
+from infrastructure.disk_snapshot import DiskSnapshot
 
 
 class DiskCollector:
 
     @staticmethod
-    def _safe_json_load(raw: str):
-
-        if not raw:
-            return []
-
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            # Proteção BOM UTF-8
-            return json.loads(raw.encode().decode("utf-8-sig"))
-
-    @staticmethod
     def collect():
+        """Coleta snapshot autoritativo e normaliza para contrato interno legacy."""
+        raw = DiskSnapshot.collect() or {}
+        disks = raw.get("Disks") or []
 
-        # Snapshot PowerShell seguro
-        command = r"""
-        Get-Disk |
-        Select-Object Number,
-                      FriendlyName,
-                      SerialNumber,
-                      Size,
-                      PartitionStyle,
-                      BusType,
-                      IsBoot,
-                      IsSystem,
-                      IsOffline,
-                      IsReadOnly,
-                      OperationalStatus |
-        ConvertTo-Json -Depth 4
-        """
+        normalized = []
 
-        raw = run_powershell(command)
+        for disk in disks:
+            partitions = disk.get("Partitions") or []
+            if isinstance(partitions, dict):
+                partitions = [partitions]
 
-        if not raw:
-            return []
+            legacy_partitions = []
+            legacy_volumes = []
 
-        data = DiskCollector._safe_json_load(raw)
+            for p in partitions:
+                legacy_partitions.append(
+                    {
+                        "PartitionNumber": p.get("PartitionNumber"),
+                        "DriveLetter": p.get("DriveLetter"),
+                        "Size": p.get("Size"),
+                        "Type": p.get("Type"),
+                    }
+                )
 
-        # Normalização de lista
-        if isinstance(data, dict):
-            data = [data]
+                volume = p.get("Volume") or {}
+                if volume:
+                    legacy_volumes.append(
+                        {
+                            "DriveLetter": p.get("DriveLetter"),
+                            "FileSystem": volume.get("FileSystem"),
+                            "Label": volume.get("Label"),
+                            "SpaceRemaining": volume.get("SpaceRemaining"),
+                        }
+                    )
 
-        snapshot = []
+            normalized.append(
+                {
+                    "Disk": {
+                        "Number": disk.get("DiskNumber"),
+                        "FriendlyName": disk.get("FriendlyName"),
+                        "SerialNumber": disk.get("SerialNumber"),
+                        "Size": disk.get("Size"),
+                        "PartitionStyle": disk.get("PartitionStyle"),
+                        "BusType": disk.get("BusType"),
+                        "IsBoot": disk.get("IsBoot", False),
+                        "IsSystem": disk.get("IsSystem", False),
+                        "IsOffline": disk.get("IsOffline", False),
+                        "OperationalStatus": disk.get("OperationalStatus"),
+                        "HealthStatus": disk.get("HealthStatus"),
+                    },
+                    "Partitions": legacy_partitions,
+                    "Volumes": legacy_volumes,
+                }
+            )
 
-        for disk in data:
-
-            snapshot.append({
-                "Disk": {
-                    "Number": disk.get("Number"),
-                    "FriendlyName": disk.get("FriendlyName"),
-                    "SerialNumber": disk.get("SerialNumber"),
-                    "Size": disk.get("Size"),
-                    "PartitionStyle": disk.get("PartitionStyle"),
-                    "BusType": disk.get("BusType"),
-                    "IsBoot": disk.get("IsBoot", False),
-                    "IsSystem": disk.get("IsSystem", False),
-                    "IsOffline": disk.get("IsOffline", False),
-                    "IsReadOnly": disk.get("IsReadOnly", False),
-                    "OperationalStatus": disk.get("OperationalStatus")
-                },
-                "Partitions": [],
-                "Volumes": []
-            })
-
-        return snapshot
-
-
-# Compatibilidade legacy (se algum módulo ainda chamar)
-def format_disk(disk_info):
-
-    print(f"Formatando disco: {disk_info.get('name', 'unknown')}")
-
-    disk_info["formatted"] = True
-
-    return disk_info
+        return normalized
