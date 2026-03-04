@@ -17,6 +17,59 @@ def wait_media_stabilization(seconds=2.0):
     time.sleep(seconds)
 
 
+def release_drive_locks(drive_letter):
+    unlock_command = f"""
+$ErrorActionPreference = "SilentlyContinue"
+
+try {{
+    $volumePath = "{drive_letter}:"
+    fsutil volume dismount $volumePath | Out-Null
+}} catch {{}}
+
+Start-Sleep -Milliseconds 500
+"""
+
+    run_powershell(unlock_command, elevated=True)
+
+
+def run_fat32format(fat32_exe, drive_letter, retries=3):
+    last_error = None
+
+    for attempt in range(1, retries + 1):
+        process = subprocess.run(
+            [str(fat32_exe), f"{drive_letter}:"],
+            input="Y\n",
+            text=True,
+            capture_output=True
+        )
+
+        if process.returncode == 0:
+            return
+
+        stderr = (process.stderr or "").strip()
+        stdout = (process.stdout or "").strip()
+
+        last_error = subprocess.CalledProcessError(
+            process.returncode,
+            [str(fat32_exe), f"{drive_letter}:"],
+            output=stdout,
+            stderr=stderr
+        )
+
+        if process.returncode == 32 and attempt < retries:
+            logger.warning(
+                "fat32format retornou erro 32 (volume em uso). "
+                f"Tentando liberar lock e repetir ({attempt}/{retries})."
+            )
+            release_drive_locks(drive_letter)
+            wait_media_stabilization(1.0)
+            continue
+
+        break
+
+    raise last_error
+
+
 # ============================================================
 # Execução segura IPC JSON
 # ============================================================
@@ -210,13 +263,7 @@ Format-Volume `
                     raise FileNotFoundError("fat32format.exe não encontrado.")
 
                 logger.info("Usando formatador externo FAT32")
-
-                subprocess.run(
-                    [str(fat32_exe), f"{drive_letter}:"],
-                    input="Y\n",
-                    text=True,
-                    check=True
-                )
+                run_fat32format(fat32_exe, drive_letter)
 
         # ---------- EXFAT ----------
         elif filesystem == "EXFAT":
