@@ -1,13 +1,16 @@
-
 import subprocess
 import json
+import shutil
+
 
 class PowerShellRunner:
 
     @staticmethod
     def run(script: str) -> dict:
+        shell = shutil.which("powershell") or shutil.which("pwsh") or "powershell"
+
         process = subprocess.run(
-            ["powershell", "-NoProfile", "-Command", script],
+            [shell, "-NoProfile", "-Command", script],
             capture_output=True,
             text=True
         )

@@ -1,4 +1,5 @@
 from core.operation_controller import OperationController
+from services.hardware_preflight import HardwarePreflight
 from utils.logger import setup_logger
 
 logger = setup_logger()
@@ -8,13 +9,14 @@ def main():
 
     logger.info("Inicializando sistema...")
 
+    HardwarePreflight.ensure_ready()
+
     controller = OperationController()
 
     snapshot = controller.initialize()
 
     print("\n=== SNAPSHOT INICIAL ===")
 
-    # Mostrar discos disponíveis
     for disk in snapshot:
         print(
             f"Disco {disk.number} - "

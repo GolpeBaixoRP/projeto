@@ -1,5 +1,10 @@
 import subprocess
 import tempfile
+import shutil
+
+
+def _resolve_powershell_binary():
+    return shutil.which("powershell") or shutil.which("pwsh") or "powershell"
 
 def run_powershell(command, elevated=True, timeout=60):
 
@@ -10,18 +15,12 @@ def run_powershell(command, elevated=True, timeout=60):
         f.write(command)
         script_path = f.name
 
-    if elevated:
-        runner = [
-            "powershell",
-            "-ExecutionPolicy", "Bypass",
-            "-File", script_path
-        ]
-    else:
-        runner = [
-            "powershell",
-            "-ExecutionPolicy", "Bypass",
-            "-File", script_path
-        ]
+    runner = [
+        _resolve_powershell_binary(),
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", script_path
+    ]
 
     proc = subprocess.run(
         runner,

@@ -1,5 +1,5 @@
 import multiprocessing
-from core.real_formatter_service import RealFormatterService
+from services.real_format_service import RealFormatterService
 
 
 class FormatterWorker:
