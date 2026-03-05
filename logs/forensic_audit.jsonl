@@ -1,0 +1,304 @@
+{"ts": 1772586424.0869277, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772586451.5405815, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772586451.5405815, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772586451.5405815, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772586451.5410573, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772586451.5410573, "kind": "SHUTDOWN", "uptime_s": 0.000476}}}
+{"ts": 1772586483.9162247, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772586483.9167206, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772586483.9167206, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772586486.5127885, "event": "PIPELINE_FAILURE", "payload": {"error": "'NoneType' object has no attribute 'strip'"}}
+{"ts": 1772586486.5137796, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772586486.5137796, "kind": "SHUTDOWN", "uptime_s": 2.597555}}}
+{"ts": 1772587079.1490905, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772587082.9654057, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772587082.9654057, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772587082.9654057, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772587082.965901, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772587082.965901, "kind": "SHUTDOWN", "uptime_s": 0.000495}}}
+{"ts": 1772587095.6772735, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772587095.6777694, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772587095.6777694, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772587098.4762049, "event": "PIPELINE_FAILURE", "payload": {"error": "Falha ao obter letra da unidade."}}
+{"ts": 1772587098.476701, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772587098.476701, "kind": "SHUTDOWN", "uptime_s": 2.799428}}}
+{"ts": 1772587710.0307996, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772587711.7982693, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772587711.7982693, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772587711.7982693, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772587711.7987666, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772587711.7987666, "kind": "SHUTDOWN", "uptime_s": 0.000497}}}
+{"ts": 1772587725.6862514, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772587725.6862514, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772587725.6862514, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772587740.3120425, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772587740.3120425, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772587740.3120425, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772587740.3125386, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772587740.3125386, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772587740.3125386, "kind": "SHUTDOWN", "uptime_s": 14.626287}}}
+{"ts": 1772587772.8574882, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772587777.7659926, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772587777.7659926, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772587777.7659926, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772587777.7664888, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772587777.7664888, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772587787.214148, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772587787.214148, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772587787.214148, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772587794.6442683, "event": "PIPELINE_FAILURE", "payload": {"error": "Command '['D:\\\\Novo_Projeto\\\\Meu_Sonho_em_um_Clique\\\\assets\\\\fat32format.exe', 'F:']' returned non-zero exit status 32."}}
+{"ts": 1772587794.646749, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772587794.646749, "kind": "SHUTDOWN", "uptime_s": 7.432601}}}
+{"ts": 1772589240.5485837, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772589244.5197682, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772589244.5197682, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772589244.5202644, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772589244.5207603, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772589244.5207603, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772589256.9839969, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772589256.9844935, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772589256.9844935, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772589288.9270926, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772589288.9275892, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772589288.9275892, "kind": "SHUTDOWN", "uptime_s": 31.943592}}}
+{"ts": 1772589671.943381, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772589672.8726661, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772589672.8726661, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772589672.8726661, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772589672.8731623, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772589672.8731623, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772589686.9606402, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772589686.9606402, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772589686.9606402, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772589687.255265, "event": "PIPELINE_FAILURE", "payload": {"error": "Elevated PowerShell failed with exit code 1"}}
+{"ts": 1772589687.2562573, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772589687.2562573, "kind": "SHUTDOWN", "uptime_s": 0.295617}}}
+{"ts": 1772590006.1115983, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772590007.7530978, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772590007.7530978, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772590007.7530978, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772590007.7535944, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772590007.7535944, "kind": "SHUTDOWN", "uptime_s": 0.000497}}}
+{"ts": 1772590016.8652635, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772590016.8652635, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772590016.8652635, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772590049.0818286, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772590049.0827944, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772590049.0827944, "kind": "SHUTDOWN", "uptime_s": 32.217531}}}
+{"ts": 1772590445.6483774, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772590446.8657, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772590446.8657, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772590446.8657, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772590446.8661962, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772590446.8661962, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772590457.5938234, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772590457.5938234, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772590457.5938234, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772590490.4084556, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772590490.4089518, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772590490.4089518, "kind": "SHUTDOWN", "uptime_s": 32.815128}}}
+{"ts": 1772590889.4447145, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772590890.618155, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772590890.618155, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772590890.618155, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772590890.619147, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772590890.619147, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772590901.8022487, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772590901.8022487, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772590901.8022487, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772590903.1751783, "event": "PIPELINE_FAILURE", "payload": {"error": "name 'output' is not defined"}}
+{"ts": 1772590903.1776586, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772590903.1776586, "kind": "SHUTDOWN", "uptime_s": 1.37541}}}
+{"ts": 1772591048.7889655, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772591048.834101, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591048.834101, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591048.8345976, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772591048.835093, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591048.835093, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772591060.8739707, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772591060.874465, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591060.874465, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591093.627758, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772591093.628254, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591093.628254, "kind": "SHUTDOWN", "uptime_s": 32.754283}}}
+{"ts": 1772591130.730187, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772591130.732171, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591130.732171, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591130.732171, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772591130.7326663, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591130.7326663, "kind": "SHUTDOWN", "uptime_s": 0.000495}}}
+{"ts": 1772591139.130558, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772591139.1310546, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591139.1310546, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591172.0875926, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772591172.0880897, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591172.0880897, "kind": "SHUTDOWN", "uptime_s": 32.957532}}}
+{"ts": 1772591186.4711373, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772591186.4726253, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591186.4726253, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591186.4726253, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772591186.4736183, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591186.4736183, "kind": "SHUTDOWN", "uptime_s": 0.000993}}}
+{"ts": 1772591193.79467, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772591193.79467, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591193.79467, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591226.555379, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772591226.5558784, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591226.5558784, "kind": "SHUTDOWN", "uptime_s": 32.761208}}}
+{"ts": 1772591260.8385398, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772591262.4109788, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591262.4109788, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591262.4109788, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772591262.411477, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591262.411477, "kind": "SHUTDOWN", "uptime_s": 0.000498}}}
+{"ts": 1772591276.770623, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772591276.770623, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591276.770623, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591278.1450403, "event": "PIPELINE_FAILURE", "payload": {"error": "name 'output' is not defined"}}
+{"ts": 1772591278.1455367, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591278.1455367, "kind": "SHUTDOWN", "uptime_s": 1.374914}}}
+{"ts": 1772591319.8830645, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772591319.8845534, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591319.8845534, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591319.8845534, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772591319.885049, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772591319.885049, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772591326.178966, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772591326.1794622, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591326.1794622, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772591357.5046465, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772591357.5056384, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772591357.5056384, "kind": "SHUTDOWN", "uptime_s": 31.326672}}}
+{"ts": 1772592320.4664414, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772592323.132, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772592323.132, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772592323.132, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772592323.132992, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772592323.132992, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772592332.7400723, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772592332.7400723, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772592332.7400723, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772592364.5727577, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772592364.5732539, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772592364.5732539, "kind": "SHUTDOWN", "uptime_s": 31.833182}}}
+{"ts": 1772592815.5429132, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772592817.0686116, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772592817.0686116, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772592817.0691078, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772592817.0696037, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772592817.0696037, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772592827.1967099, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772592827.1972065, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772592827.1972065, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772592859.235865, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772592859.236859, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772592859.236859, "kind": "SHUTDOWN", "uptime_s": 32.040149}}}
+{"ts": 1772592913.92715, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772592913.9286385, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772592913.9286385, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772592913.9286385, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772592913.9291346, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772592913.9291346, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772592925.9963953, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772592925.9968917, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772592925.9968917, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772592957.3950372, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772592957.3955336, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772592957.3955336, "kind": "SHUTDOWN", "uptime_s": 31.399138}}}
+{"ts": 1772593053.3743474, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772593058.4206147, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593058.4206147, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593058.4211102, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772593058.4216063, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593058.4216063, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772593071.1485837, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772593071.1490796, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593071.1490796, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593103.6178827, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772593103.6183784, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593103.6183784, "kind": "SHUTDOWN", "uptime_s": 32.469795}}}
+{"ts": 1772593152.5599337, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772593154.484945, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593154.484945, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593154.484945, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772593154.4854414, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593154.4854414, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772593167.7087374, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772593167.7092338, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593167.7092338, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593181.710325, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593181.710325, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772593181.710821, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772593181.710821, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772593181.710821, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593181.710821, "kind": "SHUTDOWN", "uptime_s": 14.002084}}}
+{"ts": 1772593272.0626848, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772593272.8771172, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593272.8771172, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593272.8771172, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772593272.877614, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593272.877614, "kind": "SHUTDOWN", "uptime_s": 0.000497}}}
+{"ts": 1772593283.8692672, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772593283.8692672, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593283.8692672, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593300.0935993, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593300.0935993, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772593300.0940924, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772593300.0940924, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772593300.0940924, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593300.0940924, "kind": "SHUTDOWN", "uptime_s": 16.224825}}}
+{"ts": 1772593397.9055083, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772593399.253328, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593399.253328, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593399.253328, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772593399.2538247, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593399.2538247, "kind": "SHUTDOWN", "uptime_s": 0.000497}}}
+{"ts": 1772593412.8856804, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772593412.8856804, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593412.8856804, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593415.2927718, "event": "PIPELINE_FAILURE", "payload": {"error": "'NoneType' object has no attribute 'strip'"}}
+{"ts": 1772593415.293268, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593415.293268, "kind": "SHUTDOWN", "uptime_s": 2.407588}}}
+{"ts": 1772593500.8628452, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772593503.893654, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593503.893654, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593503.8941498, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772593503.894646, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593503.894646, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772593519.3980637, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772593519.3980637, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593519.3980637, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593551.7577958, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772593551.7587876, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593551.7587876, "kind": "SHUTDOWN", "uptime_s": 32.360724}}}
+{"ts": 1772593971.7220182, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772593974.870357, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593974.870357, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772593974.870357, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772593974.8708532, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772593974.8708532, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772593991.0541253, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772593991.0541253, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772593991.0541253, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594023.1557214, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772594023.1566963, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594023.1566963, "kind": "SHUTDOWN", "uptime_s": 32.102571}}}
+{"ts": 1772594102.0725389, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772594103.9582148, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594103.9582148, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594103.9587107, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772594103.9592063, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594103.9592063, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772594159.4702914, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772594159.470788, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594159.470788, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594191.6458852, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772594191.6463811, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594191.6463811, "kind": "SHUTDOWN", "uptime_s": 32.17609}}}
+{"ts": 1772594348.7492425, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772594349.1665878, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594349.1665878, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594349.1665878, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772594349.1670845, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594349.1670845, "kind": "SHUTDOWN", "uptime_s": 0.000497}}}
+{"ts": 1772594379.8544295, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772594379.8549256, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594379.8549256, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594412.480393, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772594412.4813855, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594412.4813855, "kind": "SHUTDOWN", "uptime_s": 32.626956}}}
+{"ts": 1772594424.9522817, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772594427.7425923, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594427.7425923, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594427.7425923, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772594427.7435856, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594427.7435856, "kind": "SHUTDOWN", "uptime_s": 0.000993}}}
+{"ts": 1772594442.7986643, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772594442.7986643, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594442.7986643, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594475.3159232, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772594475.316419, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594475.316419, "kind": "SHUTDOWN", "uptime_s": 32.517755}}}
+{"ts": 1772594984.1591716, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772594984.1601636, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594984.1601636, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594984.1606598, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772594984.1606598, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772594984.1606598, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772594995.2235925, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772594995.2240891, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594995.2240891, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772594997.7348428, "event": "PIPELINE_FAILURE", "payload": {"error": "'NoneType' object has no attribute 'strip'"}}
+{"ts": 1772594997.7358348, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772594997.7358348, "kind": "SHUTDOWN", "uptime_s": 2.512242}}}
+{"ts": 1772595013.7570891, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772595019.0395043, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772595019.0395043, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772595019.0400002, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772595019.0400002, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772595019.0400002, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772595041.1837738, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772595041.1837738, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595041.1837738, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772595043.6300497, "event": "PIPELINE_FAILURE", "payload": {"error": "'NoneType' object has no attribute 'strip'"}}
+{"ts": 1772595043.6305447, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595043.6305447, "kind": "SHUTDOWN", "uptime_s": 2.446771}}}
+{"ts": 1772595063.0561674, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772595064.2076647, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772595064.2076647, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772595064.2076647, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772595064.2081616, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772595064.2081616, "kind": "SHUTDOWN", "uptime_s": 0.000497}}}
+{"ts": 1772595070.7046468, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "FAT32"}}
+{"ts": 1772595070.7056406, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595070.7056406, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772595086.7959228, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595086.7959228, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772595086.7964191, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772595086.7964191, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772595086.7964191, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595086.7964191, "kind": "SHUTDOWN", "uptime_s": 16.091772}}}
+{"ts": 1772595105.9727774, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772595107.8875463, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772595107.8875463, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772595107.8875463, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772595107.8880427, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772595107.8880427, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772595120.9517334, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772595120.9517334, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595120.9517334, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772595134.9614112, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595134.9614112, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772595134.9614112, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772595134.9619126, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772595134.9619126, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772595134.9619126, "kind": "SHUTDOWN", "uptime_s": 14.010179}}}
+{"ts": 1772599179.8310797, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772599183.037167, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772599183.037167, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772599183.037663, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772599183.037663, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772599183.037663, "kind": "SHUTDOWN", "uptime_s": 0.000496}}}
+{"ts": 1772599207.2857652, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772599207.2872508, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772599207.2872508, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772599207.2872508, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772599207.2877462, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772599207.2877462, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772599219.557126, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772599219.5576224, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772599219.5576224, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772599221.9727495, "event": "PIPELINE_FAILURE", "payload": {"error": "'NoneType' object has no attribute 'strip'"}}
+{"ts": 1772599221.9732199, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772599221.9732199, "kind": "SHUTDOWN", "uptime_s": 2.416094}}}
+{"ts": 1772599246.2775056, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772599246.8528666, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772599246.8528666, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772599246.853363, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772599246.8538587, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772599246.8538587, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772599256.1088245, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772599256.1093206, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772599256.1093206, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772599269.956345, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772599269.956345, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772599269.956345, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772599269.9568412, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772599269.9568412, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772599269.9568412, "kind": "SHUTDOWN", "uptime_s": 13.848017}}}
+{"ts": 1772608963.3337445, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772608985.561994, "event": "SELECTION_BLOCKED", "payload": {"disk": 7, "reason": "Disco não encontrado."}}
+{"ts": 1772608985.5624907, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-7", "ts": 1772608985.5624907, "kind": "SHUTDOWN", "uptime_s": 0.000497}}}
+{"ts": 1772609280.4457438, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772609281.3787215, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772609281.3787215, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772609281.3787215, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772609281.3797143, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772609281.3797143, "kind": "SHUTDOWN", "uptime_s": 0.000993}}}
+{"ts": 1772609295.4343312, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772609295.434828, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772609295.434828, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772609313.942065, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772609313.942065, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772609313.942065, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772609313.942065, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772609313.942065, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772609313.942065, "kind": "SHUTDOWN", "uptime_s": 18.507734}}}
+{"ts": 1772611014.8807907, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772611323.8451493, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772611328.7569563, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772611328.7569563, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772611328.7574277, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772611328.7579236, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772611328.7579236, "kind": "SHUTDOWN", "uptime_s": 0.000967}}}
+{"ts": 1772611342.5892441, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772611342.5892441, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772611342.5892441, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772611469.1705973, "event": "PIPELINE_FAILURE", "payload": {"error": "Runner IPC timeout"}}
+{"ts": 1772611469.171093, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772611469.171093, "kind": "SHUTDOWN", "uptime_s": 126.581849}}}
+{"ts": 1772660833.1224842, "event": "SNAPSHOT_REFRESH", "payload": {"disk_count": 5}}
+{"ts": 1772660841.760832, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772660841.760832, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772660841.7613275, "event": "SELECTION_LOCKED", "payload": {"disk": 4, "serial": "2HC015KJ"}}
+{"ts": 1772660841.761824, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "select-4", "ts": 1772660841.761824, "kind": "SHUTDOWN", "uptime_s": 0.000992}}}
+{"ts": 1772660855.6647215, "event": "PIPELINE_EXECUTE_START", "payload": {"disk": 4, "filesystem": "EXFAT"}}
+{"ts": 1772660855.665218, "event": "GUARDIAN_OBSERVE", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772660855.665218, "kind": "OBSERVATION", "summary": {"has_snapshot": true, "disk_number": 4}}}}
+{"ts": 1772660866.3480802, "event": "GUARDIAN_IDENTITY_CHECK", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772660866.3480802, "kind": "IDENTITY_CHECK", "violations": [], "healthy": true}}}
+{"ts": 1772660866.3480802, "event": "PIPELINE_VERIFY_OK", "payload": {"disk": 4, "identity": "IDENTITY_STABLE"}}
+{"ts": 1772660866.3480802, "event": "PIPELINE_COMMIT_RELEASE", "payload": {"result_status": "COMPLETED"}}
+{"ts": 1772660866.3485765, "event": "GUARDIAN_SHUTDOWN", "payload": {"guardian": "passive", "event": {"operation_id": "format-4", "ts": 1772660866.3485765, "kind": "SHUTDOWN", "uptime_s": 10.683855}}}
