@@ -1,9 +1,9 @@
 import json
+import subprocess
 from pathlib import Path
 
 from config.profiles import FILESYSTEM_TO_PROFILE
 from domain.format_profile import FormatProfile
-from utils.powershell_runner import run_powershell
 
 
 class RealFormatterService:
@@ -41,31 +41,69 @@ class RealFormatterService:
             raise ValueError(f"IPC JSON inválido: chaves ausentes {missing}")
         return data
 
+    def _error_payload(self, message: str, *, exit_code=None, stderr: str = "") -> dict:
+        return {
+            "message": message,
+            "exit_code": exit_code,
+            "stderr": (stderr or "").strip(),
+        }
+
     def format_disk(self, disk, filesystem):
-        profile = self._resolve_profile(filesystem)
-        worker_path = self._resolve_worker_path(profile)
+        base_response = {
+            "disk": getattr(disk, "number", None),
+            "stage": self.stage,
+            "status": "error",
+            "data": None,
+            "error": None,
+        }
 
         try:
-            raw_output = run_powershell(
-                script_path=str(worker_path),
-                args=["-DiskNumber", str(disk.number)],
+            profile = self._resolve_profile(filesystem)
+            worker_path = self._resolve_worker_path(profile)
+
+            command = [
+                "powershell",
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                str(worker_path),
+                "-DiskNumber",
+                str(disk.number),
+            ]
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
                 timeout=240,
             )
-            ipc_data = self._parse_ipc(raw_output)
+
+            stdout = (result.stdout or "").strip()
+            stderr = (result.stderr or "").strip()
+
+            if result.returncode != 0:
+                base_response["error"] = self._error_payload(
+                    "PowerShell execution failed",
+                    exit_code=result.returncode,
+                    stderr=stderr,
+                )
+                return base_response
+
+            ipc_data = self._parse_ipc(stdout) if stdout else None
             return {
                 "disk": disk.number,
                 "stage": self.stage,
                 "status": "success",
                 "data": ipc_data,
                 "error": None,
-                "profile": profile.id,
             }
+        except subprocess.TimeoutExpired as exc:
+            base_response["error"] = self._error_payload(
+                "PowerShell IPC timeout",
+                exit_code=None,
+                stderr=getattr(exc, "stderr", "") or "",
+            )
+            return base_response
         except Exception as exc:
-            return {
-                "disk": getattr(disk, "number", None),
-                "stage": self.stage,
-                "status": "error",
-                "data": None,
-                "error": str(exc),
-                "profile": profile.id,
-            }
+            base_response["error"] = self._error_payload(str(exc), exit_code=None, stderr="")
+            return base_response
