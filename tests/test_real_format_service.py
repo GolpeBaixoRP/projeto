@@ -3,15 +3,17 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from models.pipeline_error import PipelineError
 from services.real_format_service import RealFormatterService
+from utils.powershell_runner import RunResult
 
 
 class RealFormatterServiceTests(unittest.TestCase):
     def setUp(self):
         self.service = RealFormatterService()
-        self.disk = SimpleNamespace(number=7)
+        self.disk = SimpleNamespace(number=7, unique_id="u", serial_number="s", size=1, friendly_name="d", bus_type="USB", location_path="lp")
 
-    @patch("services.real_format_service.subprocess.run")
+    @patch("services.real_format_service.run_powershell_capture")
     def test_success_parses_json_only_from_stdout(self, run_mock):
         payload = {
             "Success": True,
@@ -20,45 +22,28 @@ class RealFormatterServiceTests(unittest.TestCase):
             "PartitionStyle": "MBR",
             "ExecutionTimeMs": 1200,
             "RebuildPerformed": False,
-            "ErrorCode": None,
+            "ErrorCode": 0,
             "ErrorMessage": None,
+            "BlockSize": 32768,
         }
-        run_mock.return_value = SimpleNamespace(
-            returncode=0,
-            stdout=json.dumps(payload),
-            stderr="",
-        )
+        run_mock.return_value = RunResult(0, json.dumps(payload), "", 100)
 
         result = self.service.format_disk(self.disk, "FAT32")
 
         self.assertEqual(result["status"], "success")
-        self.assertEqual(result["data"], payload)
-        # Tabela humana deve ser emitida fora do canal capturado de JSON.
-        print("Get-Disk 7 | Format-Table Number,FriendlyName")
+        self.assertEqual(result["data"]["FileSystem"], "FAT32")
 
-    @patch("services.real_format_service.subprocess.run")
-    def test_success_with_empty_stdout_does_not_parse_json(self, run_mock):
-        run_mock.return_value = SimpleNamespace(returncode=0, stdout="", stderr="")
+    @patch("services.real_format_service.run_powershell_capture")
+    def test_invalid_json_raises_pipeline_error(self, run_mock):
+        run_mock.return_value = RunResult(0, "noise", "", 100)
+        with self.assertRaises(PipelineError):
+            self.service.format_disk(self.disk, "FAT32")
 
-        with patch.object(self.service, "_parse_ipc", side_effect=AssertionError("não deve parsear")):
-            result = self.service.format_disk(self.disk, "FAT32")
-
-        self.assertEqual(result["status"], "success")
-        self.assertIsNone(result["data"])
-
-    @patch("services.real_format_service.subprocess.run")
-    def test_failure_includes_exit_code_and_stderr(self, run_mock):
-        run_mock.return_value = SimpleNamespace(
-            returncode=1,
-            stdout="",
-            stderr="Acesso negado",
-        )
-
-        result = self.service.format_disk(self.disk, "FAT32")
-
-        self.assertEqual(result["status"], "error")
-        self.assertEqual(result["error"]["exit_code"], 1)
-        self.assertEqual(result["error"]["stderr"], "Acesso negado")
+    @patch("services.real_format_service.run_powershell_capture")
+    def test_failure_exit_code_raises(self, run_mock):
+        run_mock.return_value = RunResult(1, "", "Acesso negado", 100)
+        with self.assertRaises(PipelineError):
+            self.service.format_disk(self.disk, "FAT32")
 
 
 if __name__ == "__main__":

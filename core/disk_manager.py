@@ -30,6 +30,11 @@ class DiskManager:
             serial_number = disk_data.get("SerialNumber", "UNKNOWN")
             partition_style = disk_data.get("PartitionStyle", "Não definido")
             bus_type = disk_data.get("BusType", "Não especificado")
+            size = disk_data.get("Size")
+            unique_id = disk_data.get("UniqueId")
+            location_path = disk_data.get("LocationPath")
+            is_removable = disk_data.get("IsRemovable")
+            is_readonly = disk_data.get("IsReadOnly")
             is_boot = disk_data.get("IsBoot", False)
             is_system = disk_data.get("IsSystem", False)
             is_offline = disk_data.get("IsOffline", False)
@@ -49,6 +54,11 @@ class DiskManager:
                 is_system=is_system,
                 is_offline=is_offline,
                 operational_status=operational_status,
+                size=size,
+                unique_id=unique_id,
+                location_path=location_path,
+                is_removable=is_removable,
+                is_readonly=is_readonly,
                 partitions=partitions,
                 volumes=volumes,
                 status=status
