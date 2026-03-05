@@ -33,8 +33,6 @@ class OperationController:
             raise ValueError("Disco de sistema bloqueado por política de segurança")
         if getattr(disk, "is_offline", False):
             raise ValueError("Disco offline bloqueado por política de segurança")
-        if getattr(disk, "partition_style", None) == "GPT":
-            raise ValueError("PartitionStyle GPT bloqueado para pipeline legado")
         if disk.status == "BLOCKED":
             raise ValueError("Disco bloqueado")
 
@@ -100,6 +98,21 @@ class OperationController:
                 {"disk": self.selected_disk.number, "filesystem": filesystem},
             )
 
+            latest_snapshot = self.disk_manager.refresh()
+            current_disk = next((d for d in latest_snapshot if d.number == self.selected_disk.number), None)
+            if current_disk is None:
+                raise RuntimeError("Falha crítica: disco selecionado ausente antes da formatação")
+
+            current_identity = PhysicalIdentityFactory.from_disk_model(current_disk)
+            precheck = guardian.detect_identity_violation(
+                before=self.selected_identity,
+                after=current_identity,
+                operation_id=f"{operation_id}-precheck",
+            )
+            self.audit.record("GUARDIAN_PRECHECK", guardian.report(precheck))
+            if precheck.get("violations"):
+                raise RuntimeError(f"Falha de identidade física pré-formatação: {precheck['violations']}")
+
             before_event = guardian.observe(
                 {
                     "Disk": {
@@ -145,7 +158,7 @@ class OperationController:
             self.selected_disk = None
             self.selected_identity = None
             self.locked = False
-            self.audit.record("PIPELINE_COMMIT_RELEASE", {"result_status": result.get("Status")})
+            self.audit.record("PIPELINE_COMMIT_RELEASE", {"result_status": result.get("status") or result.get("Status")})
             return result
 
         except Exception as e:

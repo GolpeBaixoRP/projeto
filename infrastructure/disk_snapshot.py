@@ -1,5 +1,5 @@
 import json
-from infrastructure.powershell_runner import PowerShellRunner
+from utils.powershell_runner import run_powershell
 
 
 class DiskSnapshot:
@@ -51,7 +51,7 @@ class DiskSnapshot:
         [PSCustomObject]@{ Disks = @($disks) } | ConvertTo-Json -Depth 8
         '''
 
-        raw_snapshot = PowerShellRunner.run(script)
+        raw_snapshot = run_powershell(command=script)
 
         if isinstance(raw_snapshot, dict):
             return raw_snapshot
