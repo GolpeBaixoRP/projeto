@@ -51,7 +51,6 @@ ERROR_TABLE: Dict[str, ErrorSpec] = {
         probable_causes_pt=["Logs misturados ao JSON no stdout.", "Serialização quebrada no script de snapshot."],
         recommended_actions_pt=["Separar logs e payload JSON.", "Corrigir serialização no script PowerShell."],
     ),
-
     "MS-SEL-002": ErrorSpec(
         "MS-SEL-002", "SEL", "DiskBlockedByPolicy", "ERROR", False,
         "Disco bloqueado por política.",
@@ -63,7 +62,6 @@ ERROR_TABLE: Dict[str, ErrorSpec] = {
         probable_causes_pt=["Disco interno/boot/system.", "Disco offline ou marcado como bloqueado."],
         recommended_actions_pt=["Selecionar dispositivo removível elegível.", "Atualizar snapshot antes de nova seleção."],
     ),
-
     "MS-GRD-001": ErrorSpec(
         "MS-GRD-001", "GRD", "DiskIdentityMismatch", "CRITICAL", False,
         "Violação de identidade física detectada.",
