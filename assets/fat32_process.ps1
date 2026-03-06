@@ -29,7 +29,10 @@ function New-Result {
         [string]$ErrorMessage,
         [string]$PipelineErrorCode,
         [int]$ExecutionTimeMs,
-        [int]$BlockSize = 0
+        [int]$BlockSize = 0,
+        [string]$Step = $null,
+        [string]$Expected = $null,
+        [string]$Found = $null
     )
 
     return @{
@@ -43,6 +46,9 @@ function New-Result {
         PipelineErrorCode = $PipelineErrorCode
         ExecutionTimeMs = $ExecutionTimeMs
         BlockSize = $BlockSize
+        Step = $Step
+        Expected = $Expected
+        Found = $Found
     } | ConvertTo-Json -Compress -Depth 5
 }
 

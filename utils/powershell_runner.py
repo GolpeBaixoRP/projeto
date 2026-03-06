@@ -56,6 +56,10 @@ def _build_runner(target_script: str, args: Optional[list[str]] = None) -> list[
     return runner
 
 
+def _tail(text: Optional[str], size: int = 500) -> str:
+    return (text or "")[-size:]
+
+
 def run_powershell_capture(
     command: Optional[str] = None,
     *,
@@ -63,6 +67,7 @@ def run_powershell_capture(
     args: Optional[list[str]] = None,
     elevated: bool = True,
     timeout: int = 60,
+    operation_id: Optional[str] = None,
 ) -> RunResult:
     del elevated
     if not command and not script_path:
@@ -86,13 +91,30 @@ def run_powershell_capture(
             target_script = temp_script
 
         creationflags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
-        proc = subprocess.Popen(
-            _build_runner(target_script, args),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            creationflags=creationflags,
-        )
+        runner_args = _build_runner(target_script, args)
+        try:
+            proc = subprocess.Popen(
+                runner_args,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                creationflags=creationflags,
+            )
+        except OSError as exc:
+            raise PipelineError(
+                code="MS-RUN-001",
+                stage="runner",
+                message="Falha ao iniciar processo PowerShell",
+                details={
+                    "substep": "spawn",
+                    "script_path": target_script,
+                    "args": args or [],
+                    "runner_args": runner_args,
+                    "timeout": timeout,
+                    "operation_id": operation_id,
+                    "error": str(exc),
+                },
+            ) from exc
         try:
             stdout, stderr = proc.communicate(timeout=timeout)
         except KeyboardInterrupt:
@@ -104,7 +126,14 @@ def run_powershell_capture(
                 code="MS-RUN-002",
                 stage="runner",
                 message="PowerShell IPC timeout",
-                details={"timeout": timeout, "pid": proc.pid},
+                details={
+                    "substep": "communicate",
+                    "timeout": timeout,
+                    "pid": proc.pid,
+                    "script_path": target_script,
+                    "args": args or [],
+                    "operation_id": operation_id,
+                },
             ) from exc
 
         return RunResult(
@@ -128,6 +157,7 @@ def run_powershell(
     args: Optional[list[str]] = None,
     elevated: bool = True,
     timeout: int = 60,
+    operation_id: Optional[str] = None,
 ) -> str:
     result = run_powershell_capture(
         command=command,
@@ -135,7 +165,21 @@ def run_powershell(
         args=args,
         elevated=elevated,
         timeout=timeout,
+        operation_id=operation_id,
     )
     if result.exit_code != 0:
-        raise RuntimeError(result.stderr or "PowerShell execution failed")
+        raise PipelineError(
+            code="MS-RUN-003",
+            stage="runner",
+            message="Processo PowerShell retornou erro",
+            details={
+                "substep": "exit_code",
+                "exit_code": result.exit_code,
+                "timeout": timeout,
+                "operation_id": operation_id,
+                "stdout_tail": _tail(result.stdout),
+                "stderr_tail": _tail(result.stderr),
+                "duration_ms": result.duration_ms,
+            },
+        )
     return result.stdout

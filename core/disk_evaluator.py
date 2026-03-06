@@ -38,12 +38,23 @@ class DiskEvaluator:
         if not partitions:
             return STATUS_NEEDS_PREPARATION
 
-        filesystem = None
-        if volumes:
-            filesystem = (volumes[0].get("FileSystem") or "").upper()
+        # READY depende de snapshot consistente provido pelo controller.
+        # Em dúvida (evidência incompleta), manter estado conservador.
+        if not volumes:
+            return STATUS_NEEDS_PREPARATION
+
+        primary_partition = partitions[0] if partitions else {}
+        primary_volume = volumes[0] if volumes else {}
+
+        filesystem = (primary_volume.get("FileSystem") or "").upper()
+        drive_letter = (
+            primary_volume.get("DriveLetter")
+            or primary_partition.get("DriveLetter")
+        )
+        has_drive_letter = bool(str(drive_letter or "").strip())
 
         if partition_style == "MBR":
-            if filesystem in SUPPORTED_FILESYSTEMS:
+            if filesystem in SUPPORTED_FILESYSTEMS and has_drive_letter:
                 return STATUS_READY
             return STATUS_NEEDS_PREPARATION
 
