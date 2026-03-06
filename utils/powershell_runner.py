@@ -17,6 +17,28 @@ class RunResult:
     duration_ms: int
 
 
+
+def _kill_process_tree(proc: subprocess.Popen) -> None:
+    """Best-effort kill of a process and its children (important for storage cmdlets that hang).
+    On Windows uses taskkill /T to kill the full tree.
+    """
+    try:
+        if os.name == "nt":
+            subprocess.run(
+                ["taskkill", "/PID", str(proc.pid), "/T", "/F"],
+                capture_output=True,
+                text=True,
+            )
+        else:
+            proc.terminate()
+    except Exception:
+        pass
+    finally:
+        try:
+            proc.kill()
+        except Exception:
+            pass
+
 def _build_runner(target_script: str, args: Optional[list[str]] = None) -> list[str]:
     runner = [
         "powershell",
@@ -73,13 +95,16 @@ def run_powershell_capture(
         )
         try:
             stdout, stderr = proc.communicate(timeout=timeout)
+        except KeyboardInterrupt:
+            _kill_process_tree(proc)
+            raise
         except subprocess.TimeoutExpired as exc:
-            proc.kill()
+            _kill_process_tree(proc)
             raise PipelineError(
                 code="MS-RUN-002",
                 stage="runner",
                 message="PowerShell IPC timeout",
-                details={"timeout": timeout},
+                details={"timeout": timeout, "pid": proc.pid},
             ) from exc
 
         return RunResult(

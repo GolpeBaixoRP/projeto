@@ -1,57 +1,327 @@
 param(
-    [Parameter(Mandatory=$true)][int]$DiskNumber,
+    [Parameter(Mandatory=$true)]
+    [int]$DiskNumber,
+
     [string]$UniqueId = "",
     [string]$SerialNumber = "",
-    [string]$SizeBytes = "",
+    [long]$SizeBytes = 0,
     [string]$FriendlyName = "",
     [string]$BusType = "",
-    [string]$LocationPath = "",
-    [ValidateSet("ForceRebuild","EnsureState")][string]$Mode = "ForceRebuild"
+    [string]$LocationPath = ""
 )
-$ErrorActionPreference = "Stop"
-$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-$ExpectedLabel = "PS2X FAT"
 
-function New-Result([bool]$Success,[string]$DriveLetter,[string]$FileSystem,[string]$PartitionStyle,[bool]$RebuildPerformed,[int]$ErrorCode,[string]$ErrorMessage,[string]$PipelineErrorCode,[int]$BlockSize){
- $stopwatch.Stop(); @{Success=$Success;DriveLetter=$DriveLetter;FileSystem=$FileSystem;PartitionStyle=$PartitionStyle;ExecutionTimeMs=[int]$stopwatch.ElapsedMilliseconds;RebuildPerformed=$RebuildPerformed;ErrorCode=$ErrorCode;ErrorMessage=$ErrorMessage;PipelineErrorCode=$PipelineErrorCode;BlockSize=$BlockSize} | ConvertTo-Json -Compress
+$ErrorActionPreference = "Stop"
+
+function Normalize-String {
+    param([object]$Value)
+    if ($null -eq $Value) { return "" }
+    return [string]$Value
 }
+
+function New-Result {
+    param(
+        [bool]$Success,
+        [string]$DriveLetter,
+        [string]$FileSystem,
+        [string]$PartitionStyle,
+        [bool]$RebuildPerformed,
+        [int]$ErrorCode,
+        [string]$ErrorMessage,
+        [string]$PipelineErrorCode,
+        [int]$ExecutionTimeMs,
+        [int]$BlockSize = 0
+    )
+
+    return @{
+        Success = $Success
+        DriveLetter = $DriveLetter
+        FileSystem = $FileSystem
+        PartitionStyle = $PartitionStyle
+        RebuildPerformed = $RebuildPerformed
+        ErrorCode = $ErrorCode
+        ErrorMessage = $ErrorMessage
+        PipelineErrorCode = $PipelineErrorCode
+        ExecutionTimeMs = $ExecutionTimeMs
+        BlockSize = $BlockSize
+    } | ConvertTo-Json -Compress -Depth 5
+}
+
+function Get-DiskCandidates {
+    $all = Get-Disk | ForEach-Object {
+        [PSCustomObject]@{
+            Number = $_.Number
+            FriendlyName = Normalize-String $_.FriendlyName
+            SerialNumber = Normalize-String $_.SerialNumber
+            UniqueId = Normalize-String $_.UniqueId
+            LocationPath = Normalize-String $_.LocationPath
+            BusType = Normalize-String $_.BusType
+            IsRemovable = [bool]$_.IsRemovable
+            Size = [long]$_.Size
+        }
+    }
+    return $all
+}
+
 function Resolve-Disk {
     param([int]$Preferred)
-    $d = Get-Disk -Number $Preferred -ErrorAction SilentlyContinue
-    if ($d) { return $d.Number }
-    foreach ($x in Get-Disk) {
-        if ($UniqueId -and $x.UniqueId -eq $UniqueId) { return $x.Number }
-        if ($SerialNumber -and $x.SerialNumber -eq $SerialNumber) { return $x.Number }
-        if ($LocationPath -and $x.LocationPath -eq $LocationPath) { return $x.Number }
-        if ($FriendlyName -and $SizeBytes -and $x.FriendlyName -eq $FriendlyName -and [string]$x.Size -eq [string]$SizeBytes) { return $x.Number }
+
+    try {
+        $direct = Get-Disk -Number $Preferred -ErrorAction Stop
+        if ($null -ne $direct) { return $Preferred }
+    } catch {}
+
+    $candidates = Get-DiskCandidates
+    if ($null -eq $candidates -or $candidates.Count -eq 0) { return $null }
+
+    $best = $null
+    $bestScore = -1
+
+    foreach ($c in $candidates) {
+        $score = 0
+        if ($UniqueId -and $c.UniqueId -and $UniqueId -eq $c.UniqueId) { $score += 100 }
+        if ($SerialNumber -and $c.SerialNumber -and $SerialNumber -eq $c.SerialNumber) { $score += 80 }
+        if ($LocationPath -and $c.LocationPath -and $LocationPath -eq $c.LocationPath) { $score += 60 }
+        if ($FriendlyName -and $c.FriendlyName -and $FriendlyName -eq $c.FriendlyName) { $score += 10 }
+        if ($SizeBytes -gt 0 -and $c.Size -eq $SizeBytes) { $score += 10 }
+
+        if ($score -gt $bestScore) {
+            $bestScore = $score
+            $best = $c
+        }
     }
+
+    if ($null -ne $best -and $bestScore -ge 10) {
+        return [int]$best.Number
+    }
+
     return $null
 }
-function Get-BlockSize([string]$DriveLetter){ try { $v=Get-CimInstance Win32_Volume -Filter "DriveLetter='$DriveLetter`:'" -ErrorAction Stop; return [int]$v.BlockSize } catch { return 0 } }
+
+function Invoke-DiskPartScript {
+    param([string[]]$Lines)
+
+    $tmp = [System.IO.Path]::GetTempFileName()
+    try {
+        [System.IO.File]::WriteAllLines($tmp, $Lines)
+
+        $psi = New-Object System.Diagnostics.ProcessStartInfo
+        $psi.FileName = "diskpart.exe"
+        $psi.Arguments = "/s `"$tmp`""
+        $psi.CreateNoWindow = $true
+        $psi.UseShellExecute = $false
+        $psi.RedirectStandardOutput = $true
+        $psi.RedirectStandardError = $true
+
+        $p = New-Object System.Diagnostics.Process
+        $p.StartInfo = $psi
+        [void]$p.Start()
+        $stdout = $p.StandardOutput.ReadToEnd()
+        $stderr = $p.StandardError.ReadToEnd()
+        $p.WaitForExit()
+
+        return @{
+            ExitCode = $p.ExitCode
+            StdOut = $stdout
+            StdErr = $stderr
+        }
+    }
+    finally {
+        Remove-Item $tmp -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Release-DiskAccess {
+    param([int]$DiskNumberToRelease)
+
+    try {
+        $parts = Get-Partition -DiskNumber $DiskNumberToRelease -ErrorAction SilentlyContinue
+        foreach ($part in $parts) {
+            if ($part.DriveLetter) {
+                $path = "$($part.DriveLetter):"
+                try { mountvol $path /D | Out-Null } catch {}
+                try {
+                    Remove-PartitionAccessPath -DiskNumber $DiskNumberToRelease -PartitionNumber $part.PartitionNumber -AccessPath $path -ErrorAction SilentlyContinue
+                } catch {}
+            }
+        }
+    } catch {}
+
+    try { Update-HostStorageCache } catch {}
+    Start-Sleep -Milliseconds 1200
+}
+
+function Invoke-DiskPartRebuild {
+    param([int]$ResolvedDisk)
+
+    $last = $null
+
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        Release-DiskAccess -DiskNumberToRelease $ResolvedDisk
+
+        $result = Invoke-DiskPartScript -Lines @(
+            "automount enable"
+            "rescan"
+            "select disk $ResolvedDisk"
+            "attributes disk clear readonly"
+            "clean"
+            "convert mbr"
+            "create partition primary"
+            "assign"
+            "exit"
+        )
+
+        $last = $result
+
+        if ($result.ExitCode -eq 0) {
+            return $result
+        }
+
+        $combined = "$($result.StdOut)`n$($result.StdErr)"
+        if ($combined -match "Acesso negado" -or $combined -match "Access is denied") {
+            Start-Sleep -Seconds 2
+            continue
+        }
+
+        return $result
+    }
+
+    return $last
+}
+
+function Ensure-DriveLetter {
+    param(
+        [Microsoft.Management.Infrastructure.CimInstance]$Partition,
+        [int]$DiskNumberToQuery
+    )
+
+    if ($null -eq $Partition) { return $null }
+    if ($Partition.DriveLetter) { return $Partition.DriveLetter }
+
+    $used = @()
+    try {
+        $used = (Get-Volume -ErrorAction SilentlyContinue |
+            Where-Object { $_.DriveLetter } |
+            Select-Object -ExpandProperty DriveLetter)
+    } catch {}
+
+    $preferredLetters = @("P","Q","R","S","T","U","V","W","X","Y","Z","M","N","O","L","K","J","I","H","G","F","E","D")
+
+    foreach ($letter in $preferredLetters) {
+        if ($used -notcontains $letter) {
+            try {
+                Add-PartitionAccessPath -DiskNumber $DiskNumberToQuery -PartitionNumber $Partition.PartitionNumber -AccessPath "$letter`:" -ErrorAction Stop
+                Start-Sleep -Milliseconds 800
+                return $letter
+            } catch {}
+        }
+    }
+
+    return $null
+}
+
+function Wait-PartitionAndLetter {
+    param(
+        [int]$DiskNumber,
+        [int]$Retries = 25,
+        [int]$DelayMs = 800
+    )
+
+    for ($i=1; $i -le $Retries; $i++) {
+        Update-HostStorageCache
+        Start-Sleep -Milliseconds $DelayMs
+
+        $resolved = Resolve-Disk -Preferred $DiskNumber
+        if ($null -eq $resolved) { continue }
+
+        $part = Get-Partition -DiskNumber $resolved -ErrorAction SilentlyContinue |
+            Where-Object { $_.PartitionNumber -ge 1 } |
+            Sort-Object PartitionNumber |
+            Select-Object -First 1
+
+        if ($null -eq $part) { continue }
+
+        $letter = $part.DriveLetter
+        if ([string]::IsNullOrWhiteSpace($letter)) {
+            $letter = Ensure-DriveLetter -Partition $part -DiskNumberToQuery $resolved
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace($letter)) {
+            return @{
+                DiskNumber = $resolved
+                PartitionNumber = $part.PartitionNumber
+                DriveLetter = $letter
+            }
+        }
+    }
+
+    return $null
+}
+
+function Get-VolumeEvidence {
+    param([string]$DriveLetter)
+
+    $vol = Get-CimInstance Win32_Volume -ErrorAction SilentlyContinue |
+        Where-Object { $_.DriveLetter -eq "$DriveLetter`:" } |
+        Select-Object -First 1
+
+    if ($null -eq $vol) { return $null }
+
+    return @{
+        DriveLetter = $DriveLetter
+        FileSystem = Normalize-String $vol.FileSystem
+        BlockSize = if ($vol.BlockSize) { [int]$vol.BlockSize } else { 0 }
+        Capacity = if ($vol.Capacity) { [int64]$vol.Capacity } else { 0 }
+    }
+}
+
+$startedAt = Get-Date
 
 try {
     $resolved = Resolve-Disk -Preferred $DiskNumber
-    if ($null -eq $resolved) { Write-Output (New-Result $false $null $null $null $false 30 "Removable not reacquired" "MS-USB-003" 0); return }
-    if ($resolved -eq 0) { Write-Output (New-Result $false $null $null $null $false 10 "Disk 0 is protected" "MS-SEL-002" 0); return }
-    $disk = Get-Disk -Number $resolved -ErrorAction Stop
-    if ($disk.IsBoot -or $disk.IsSystem) { Write-Output (New-Result $false $null $null $null $false 11 "System/boot disk protected" "MS-SEL-002" 0); return }
+    if ($null -eq $resolved) {
+        Write-Output (New-Result $false $null $null $null $false 10 "Disk not found or not reacquired" "MS-USB-003" 0)
+        return
+    }
 
-    if ($disk.IsOffline) { Set-Disk -Number $resolved -IsOffline $false -ErrorAction Stop }
-    if ($disk.IsReadOnly) { Set-Disk -Number $resolved -IsReadOnly $false -ErrorAction Stop }
+    try { Set-Disk -Number $resolved -IsOffline $false -ErrorAction SilentlyContinue } catch {}
+    try { Set-Disk -Number $resolved -IsReadOnly $false -ErrorAction SilentlyContinue } catch {}
 
-    $resolved = Resolve-Disk -Preferred $resolved; if ($null -eq $resolved) { Write-Output (New-Result $false $null $null $null $false 30 "Removable not reacquired" "MS-USB-003" 0); return }
-    Clear-Disk -Number $resolved -RemoveData -Confirm:$false -ErrorAction Stop
-    Start-Sleep -Milliseconds 500
+    $diskpartResult = Invoke-DiskPartRebuild -ResolvedDisk $resolved
 
-    $resolved = Resolve-Disk -Preferred $resolved; if ($null -eq $resolved) { Write-Output (New-Result $false $null $null $null $false 30 "Removable not reacquired" "MS-USB-003" 0); return }
-    Initialize-Disk -Number $resolved -PartitionStyle MBR -ErrorAction Stop
-    $partition = New-Partition -DiskNumber $resolved -UseMaximumSize -AssignDriveLetter -ErrorAction Stop
-    Format-Volume -Partition $partition -FileSystem exFAT -AllocationUnitSize 32768 -NewFileSystemLabel $ExpectedLabel -Confirm:$false | Out-Null
+    if ($diskpartResult.ExitCode -ne 0) {
+        $msg = "DiskPart failed."
+        if ($diskpartResult.StdErr) { $msg += " STDERR: $($diskpartResult.StdErr.Trim())" }
+        elseif ($diskpartResult.StdOut) { $msg += " STDOUT: $($diskpartResult.StdOut.Trim())" }
+
+        Write-Output (New-Result $false $null $null $null $false 31 $msg "MS-DSK-003" 0)
+        return
+    }
+
+    $ready = Wait-PartitionAndLetter -DiskNumber $resolved -Retries 25 -DelayMs 800
+    if ($null -eq $ready) {
+        Write-Output (New-Result $false $null $null $null $false 33 "Partition/DriveLetter not found after rebuild" "MS-DSK-006" 0)
+        return
+    }
+
+    $resolved = [int]$ready.DiskNumber
+    $driveLetter = [string]$ready.DriveLetter
+
+    Format-Volume -DriveLetter $driveLetter -FileSystem exFAT -AllocationUnitSize 32768 -NewFileSystemLabel "USB" -Confirm:$false -Force | Out-Null
+
     Update-HostStorageCache
-    $volume = Get-Volume -DriveLetter $partition.DriveLetter -ErrorAction Stop
-    $disk = Get-Disk -Number $resolved -ErrorAction Stop
-    $bs = Get-BlockSize -DriveLetter $partition.DriveLetter
-    Write-Output (New-Result $true $volume.DriveLetter $volume.FileSystem $disk.PartitionStyle $true 0 $null $null $bs)
-} catch {
-    Write-Output (New-Result $false $null $null $null $false 99 $_.Exception.Message "MS-FMT-002" 0)
+    Start-Sleep -Seconds 2
+
+    $evidence = Get-VolumeEvidence -DriveLetter $driveLetter
+    if ($null -eq $evidence) {
+        Write-Output (New-Result $false $driveLetter "exFAT" "MBR" $true 42 "Volume evidence not found after exFAT format" "MS-VFY-002" 0)
+        return
+    }
+
+    $elapsed = [int]((Get-Date) - $startedAt).TotalMilliseconds
+    Write-Output (New-Result $true $driveLetter "exFAT" "MBR" $true 0 "" "" $elapsed $evidence.BlockSize)
+}
+catch {
+    $elapsed = [int]((Get-Date) - $startedAt).TotalMilliseconds
+    $message = $_.Exception.Message
+    Write-Output (New-Result $false $null $null $null $false 99 $message "MS-DSK-003" $elapsed)
 }

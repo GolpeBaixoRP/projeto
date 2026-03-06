@@ -1,0 +1,1006 @@
+Documento Técnico
+Marco de Validação do Núcleo
+Projeto: Meu Sonho em um Clique
+
+Data de registro: 06-03-2026
+Autor: Rodrigo Paneto
+
+1. Objetivo do Projeto
+
+O projeto Meu Sonho em um Clique tem como objetivo implementar um sistema determinístico de preparação de mídia removível, projetado para:
+
+preparar discos USB
+
+reconstruir layout de partição
+
+padronizar estrutura de armazenamento
+
+aplicar formatação controlada
+
+validar o resultado final
+
+O sistema foi projetado com filosofia semelhante a storage appliances, onde a mídia é preparada segundo uma política definida e verificada antes de ser considerada pronta.
+
+A política principal definida para o sistema é:
+
+discos alvo devem ser convertidos para MBR
+
+o sistema deve suportar FAT32 e exFAT
+
+o resultado deve ser verificado antes da liberação da unidade
+
+2. Arquitetura do Sistema
+
+O sistema foi estruturado em camadas separadas para manter isolamento entre:
+
+interface
+
+orquestração
+
+execução real
+
+utilidades
+
+modelo de dados
+
+Estrutura principal do projeto:
+
+main.py
+
+core/
+    operation_controller.py
+    guardian.py
+
+services/
+    real_format_service.py
+
+utils/
+    powershell_runner.py
+    logger.py
+
+models/
+    disk_model.py
+
+assets/
+    fat32_process.ps1
+    exfat_process.ps1
+
+Essa separação cria um fluxo claro de responsabilidade.
+
+3. Pipeline Operacional
+
+Cada operação de formatação executa o seguinte pipeline:
+
+INIT / lock
+SNAPSHOT refresh + identidade
+PRECHECK guardian
+IPC start
+Worker execution
+IPC end
+Snapshot refresh pós
+Verify evidência
+Commit / release
+
+Descrição das etapas:
+
+INIT / lock
+
+Garante exclusividade de operação sobre o disco selecionado.
+
+SNAPSHOT refresh
+
+Coleta estado atual do hardware através das APIs do Windows.
+
+PRECHECK guardian
+
+Valida se o disco pode ser manipulado.
+
+Exemplos de bloqueio:
+
+disco do sistema
+
+disco interno
+
+estado inconsistente
+
+IPC start
+
+Disparo do worker PowerShell responsável pela manipulação real da mídia.
+
+Worker execution
+
+Executa:
+
+clean
+convert mbr
+create partition primary
+format
+assign
+
+Snapshot refresh pós
+
+Reconsulta o estado físico após a operação.
+
+Verify evidência
+
+Valida:
+
+estilo da partição
+
+sistema de arquivos
+
+cluster size
+
+presença de letra de unidade
+
+Commit
+
+Libera a unidade e marca o disco como READY.
+
+4. Política de Preparação de Mídia
+
+A política implementada pelo sistema define que discos preparados devem seguir:
+
+Partition Style : MBR
+Filesystem      : FAT32 ou exFAT
+Cluster size    : definido pelo worker
+Volume letter   : atribuída
+
+Essa política garante compatibilidade com:
+
+OPL
+
+PlayStation 2
+
+sistemas legados
+
+ferramentas que exigem MBR
+
+5. Cenários de Teste Executados
+
+Durante a validação foram testados os seguintes cenários reais.
+
+Cenário 1
+
+Entrada:
+
+Disco 3
+Partition Style : GPT
+Filesystem alvo : exFAT
+
+Resultado:
+
+pipeline executado com sucesso
+disco convertido para MBR
+formatação concluída
+Cenário 2
+
+Entrada:
+
+Disco 3
+Partition Style : GPT
+Filesystem alvo : FAT32
+
+Resultado:
+
+pipeline executado com sucesso
+conversão GPT → MBR realizada
+formatação validada
+Cenário 3
+
+Entrada:
+
+Disco 4
+Partition Style : GPT
+Filesystem alvo : exFAT
+
+Resultado:
+
+pipeline executado com sucesso
+disco preparado
+verificação concluída
+Cenário 4
+
+Entrada:
+
+Disco 4
+Partition Style : GPT
+Filesystem alvo : FAT32
+
+Resultado:
+
+pipeline executado com sucesso
+conversão para MBR aplicada
+disco marcado como READY
+6. Evidência Observada nos Logs
+
+Durante a execução foi observado o fluxo completo do pipeline:
+
+INIT / lock
+SNAPSHOT refresh + identidade
+PRECHECK guardian
+IPC start
+IPC end
+Snapshot refresh pós
+Verify evidência
+Commit/release
+Formatação concluída com sucesso
+
+Além disso, snapshots subsequentes demonstraram mudança de estado do disco:
+
+Antes da operação:
+
+Partition Style : GPT
+Status          : NEEDS_PREPARATION
+
+Após a operação:
+
+Partition Style : MBR
+Status          : READY
+7. Comportamento do Guardian
+
+O módulo Guardian demonstrou comportamento consistente ao classificar discos.
+
+Estados identificados:
+
+BLOCKED
+NEEDS_PREPARATION
+READY
+
+Isso confirma que o sistema possui uma camada de proteção contra operações indevidas.
+
+8. Estabilidade do Sistema
+
+Durante os testes foi observado que:
+
+o sistema inicializa consistentemente
+
+o snapshot de discos é coletado sem falhas
+
+o worker PowerShell executa e retorna corretamente
+
+o pipeline conclui sem deadlocks
+
+erros anteriores de DiskPart foram eliminados
+
+9. Conclusão Técnica
+
+Os testes realizados indicam que o núcleo operacional do sistema está funcional e validado para os cenários principais de uso.
+
+O sistema demonstrou capacidade de:
+
+detectar discos
+
+classificar estado
+
+executar pipeline de preparação
+
+converter GPT para MBR
+
+formatar mídia
+
+validar o resultado
+
+liberar o dispositivo pronto para uso
+
+Com base nos testes realizados, o projeto atingiu o marco de validação do núcleo funcional.
+
+10. Próximas Etapas do Projeto
+
+Com o núcleo estabilizado, as próximas fases do projeto são:
+
+documentação completa do sistema
+
+endurecimento do guardian
+
+testes automatizados adicionais
+
+melhorias na experiência de usuário
+
+empacotamento do software
+
+identidade visual e distribuição
+
+Consideração final
+
+Este marco representa a consolidação do núcleo lógico do sistema Meu Sonho em um Clique, resultado de desenvolvimento autodidata, investigação técnica e validação prática em ambiente real.
+
+O sistema demonstrou comportamento determinístico e consistente durante os testes executados.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Checklist final de consolidação
+0. Critério de saída
+
+O projeto só pode ser considerado 100% pronto para bluepoint final quando estes 5 critérios forem verdadeiros ao mesmo tempo:
+
+Código-fonte e runtime são o mesmo estado
+
+Workers FAT32 e exFAT estão sincronizados com o comportamento validado
+
+Validação física final foi registrada
+
+Pacote está limpo e reproduzível
+
+Suíte mínima de teste cobre contrato real do pipeline
+
+Se um deles falhar, o projeto está funcional, mas ainda não está “congelável”.
+
+1. Consolidação do código-fonte
+1.1 Sincronizar os workers finais
+
+Você precisa confirmar que os arquivos abaixo são exatamente as versões que produziram os testes bem-sucedidos:
+
+assets/fat32_process.ps1
+
+assets/xfat_process.ps1
+
+O que validar neles
+fat32_process.ps1
+
+aceita parâmetros:
+
+DiskNumber
+
+UniqueId
+
+SerialNumber
+
+SizeBytes
+
+FriendlyName
+
+BusType
+
+LocationPath
+
+faz rebuild com:
+
+clean
+
+convert mbr
+
+create partition primary
+
+assign
+
+tenta liberar acesso antes do clean
+
+usa retry quando houver Access denied
+
+usa fat32format.exe com parâmetro correto para 32 KB
+
+retorna JSON consistente
+
+nunca deixa processo pendurado sem timeout
+
+xfat_process.ps1
+
+aceita os mesmos parâmetros
+
+faz rebuild determinístico
+
+fixa cluster size coerente com política final
+
+trata Access denied
+
+retorna JSON consistente
+
+1.2 Verificar coerência do contrato JSON
+
+Os dois workers devem devolver o mesmo formato lógico.
+
+Campos mínimos padronizados
+
+Success
+
+DriveLetter
+
+FileSystem
+
+PartitionStyle
+
+RebuildPerformed
+
+ErrorCode
+
+ErrorMessage
+
+PipelineErrorCode
+
+ExecutionTimeMs
+
+BlockSize
+
+Se um worker devolver algo diferente do outro, já nasce dívida técnica.
+
+1.3 Congelar assinatura do controller → worker
+
+O contrato entre:
+
+core/operation_controller.py
+
+services/real_format_service.py
+
+utils/powershell_runner.py
+
+assets/*.ps1
+
+tem que ser considerado congelado.
+
+Regra
+
+Nenhum parâmetro novo entra no worker sem:
+
+atualização simultânea no real_format_service.py
+
+teste unitário de serialização de args
+
+validação manual de execução do .ps1
+
+Isso evita voltar para o inferno do:
+NamedParameterNotFound: UniqueId
+
+2. Consolidação da política funcional
+2.1 Definir política final de filesystem
+
+Hoje já está claro:
+
+FAT32
+
+obrigatório:
+
+MBR
+
+BlockSize = 32768
+
+exFAT
+
+Aqui você precisa decidir formalmente se a política é:
+
+opção A — permissiva
+
+MBR
+
+exFAT
+
+cluster pode variar
+
+opção B — determinística
+
+MBR
+
+exFAT
+
+BlockSize = 32768
+
+Pelo espírito do projeto, eu recomendo opção B.
+Porque o seu sistema não quer “deixar o Windows decidir”. Ele quer impor política.
+
+Se escolher isso, o verify também deve cobrar 32768 em exFAT.
+
+2.2 Formalizar estado READY
+
+O disco só deve virar READY quando estas condições forem verdadeiras:
+
+PartitionStyle == MBR
+
+existe exatamente uma partição principal operacional
+
+existe letra de unidade
+
+filesystem bate com o pedido
+
+cluster size bate com a política
+
+worker retornou sucesso
+
+verify passou
+
+Se qualquer uma falhar, o estado deve continuar:
+
+NEEDS_PREPARATION
+
+ou ERROR no futuro, se você quiser criar esse estado
+
+3. Consolidação arquitetural
+3.1 Preservar single-thread
+
+Seu projeto deve continuar single-thread na operação principal.
+
+Regra
+
+uma operação por vez
+
+um disco selecionado por vez
+
+um worker por vez
+
+nenhum processamento concorrente de múltiplos discos
+
+Isso evita:
+
+race condition
+
+conflito de letra
+
+disputa de DiskPart
+
+estados fantasmas do Windows
+
+3.2 Preservar hierarquia rígida
+
+A ordem de autoridade deve continuar assim:
+
+main.py
+↓
+OperationController
+↓
+Guardian / Policy
+↓
+RealFormatService
+↓
+PowerShell runner
+↓
+Worker PS1
+Regra
+
+main.py não decide regra de mídia
+
+worker PS1 não decide política global
+
+controller continua sendo o soberano do pipeline
+
+Isso é importante porque o worker é “mão”, não “cérebro”.
+
+3.3 Proibir lógica crítica espalhada
+
+Toda política crítica deve ter dono explícito:
+
+Controller
+
+orquestração
+
+progresso
+
+commit/fail
+
+verificação final
+
+Guardian
+
+identidade física
+
+proteção de dispositivo
+
+Worker
+
+execução concreta de disco
+
+Service
+
+ponte de IPC / captura / parse
+
+Se a mesma regra existir em dois lugares, você cria uma seita e não um sistema.
+
+4. Consolidação dos testes
+4.1 Teste manual oficial
+
+Você já fez praticamente isso. Agora precisa virar ritual documentado.
+
+Sequência oficial
+
+Disco 3 GPT → exFAT
+
+Disco 3 GPT → FAT32
+
+Disco 4 GPT → exFAT
+
+Disco 4 GPT → FAT32
+
+Evidência obrigatória pós-teste
+
+Rodar:
+
+Get-Disk | Select Number,FriendlyName,PartitionStyle,BusType,Size | Sort Number
+Get-Partition | Select DiskNumber,PartitionNumber,DriveLetter,Type,Size | Sort DiskNumber,PartitionNumber
+Get-CimInstance Win32_Volume | Select DriveLetter,FileSystem,BlockSize,Capacity | Sort DriveLetter
+
+Salvar a saída.
+
+4.2 Melhorar o test_pipeline.py
+
+O teste atual precisa virar ferramenta oficial de regressão.
+
+Ele deve ter:
+
+plano fixo e aleatório
+
+timeout por rodada
+
+logs por execução
+
+resumo final
+
+classificação:
+
+SUCCESS
+
+ERROR
+
+TIMEOUT
+
+UNKNOWN
+
+Ele não deve:
+
+depender de sleeps cegos
+
+escrever stdin sem esperar prompt
+
+deixar processo vivo se travar
+
+4.3 Teste unitário mínimo obrigatório
+
+A suíte atual é útil, mas ainda magra para um projeto desse tipo.
+
+Você deveria ter pelo menos estes testes:
+
+tests/test_real_format_service.py
+
+worker retorna JSON válido
+
+worker retorna JSON inválido
+
+exit code != 0
+
+timeout do runner
+
+PipelineErrorCode propagado corretamente
+
+tests/test_guardian.py
+
+match forte → permitido
+
+drift tolerável USB-like → permitido com warning
+
+mismatch físico → bloqueado
+
+tests/test_operation_controller.py
+
+verify falha quando cluster está errado
+
+verify falha quando partition style está errado
+
+verify falha quando filesystem está errado
+
+estado READY só quando contrato completo é satisfeito
+
+5. Consolidação do runner
+5.1 Endurecer utils/powershell_runner.py
+
+Esse arquivo precisa ficar blindado porque ele é o túnel entre Python e PowerShell.
+
+O que precisa garantir
+
+timeout real
+
+captura robusta de stdout/stderr
+
+processo oculto
+
+sem popup
+
+kill da árvore de processos em timeout
+
+kill da árvore em KeyboardInterrupt
+
+Se isso não estiver feito, um worker pode virar zumbi e o operador fica refém do terminal. Coisa deselegante, feia e bem Windows.
+
+5.2 Padronizar erros do runner
+
+Hoje, pelo que vimos, você já tem algo como:
+
+MS-RUN-002 timeout
+
+MS-RUN-003 execution failed
+
+Isso está bom. O que falta é documentar formalmente:
+
+causa
+
+camada
+
+ação esperada
+
+6. Consolidação dos códigos de erro
+6.1 Fechar a tabela de erro
+
+Seu projeto já aponta para isso. Agora precisa congelar.
+
+Tabela mínima
+
+MS-SNP-* snapshot
+
+MS-GRD-* guardian
+
+MS-RUN-* runner
+
+MS-DSK-* disk rebuild
+
+MS-FMT-* formatting
+
+MS-VFY-* verification
+
+MS-USB-* removable media reacquire
+
+Para cada código
+
+definir:
+
+nome
+
+descrição
+
+etapa
+
+severidade
+
+ação sugerida
+
+Isso vira sua “cartilha de diagnóstico”.
+
+7. Consolidação da higiene do repositório
+7.1 Limpeza obrigatória
+
+No snapshot final do projeto, não deixe dentro do pacote:
+
+__pycache__/
+
+logs transitórios
+
+test_logs/
+
+screenshots soltas
+
+arquivos temporários
+
+dumps de conversa
+
+outputs experimentais
+
+O repositório final deve parecer ferramenta, não oficina depois de solda.
+
+7.2 Criar .gitignore
+
+Se ainda não tiver, precisa ter.
+
+Exemplo mínimo:
+
+__pycache__/
+*.pyc
+logs/
+test_logs/
+*.log
+*.tmp
+*.bak
+7.3 Separar artefatos de validação
+
+Crie uma pasta tipo:
+
+validation/
+
+com:
+
+validation_report.md
+
+outputs dos comandos pós-teste
+
+resumo de cenários aprovados
+
+Isso mantém prova e limpeza ao mesmo tempo.
+
+8. Consolidação documental
+8.1 Documentos mínimos que o projeto deve ter
+README.md
+
+o que é o projeto
+
+o que ele faz
+
+o que ele não faz
+
+requisitos
+
+como executar
+
+aviso de risco
+
+docs/architecture.md
+
+camadas
+
+fluxo
+
+contratos
+
+política de estado
+
+docs/error_codes.md
+
+tabela de erros
+
+docs/validation_bluepoint.md
+
+marco do núcleo validado
+
+cenários aprovados
+
+evidências
+
+8.2 Definir explicitamente o que o projeto não faz
+
+Isso evita escopo inflado.
+
+Exemplo:
+
+não instala OPL
+
+não instala PopStarter
+
+não gerencia jogos
+
+não opera em múltiplos discos simultâneos
+
+não é ferramenta genérica de gerenciamento de armazenamento
+
+Isso deixa o projeto afiado.
+
+9. Consolidação da segurança operacional
+9.1 Confirmar bloqueio de disco interno
+
+Precisa existir política muito clara para impedir operação em:
+
+disco do sistema
+
+disco boot
+
+disco SATA interno
+
+volumes críticos
+
+O ideal é o usuário nem conseguir seguir adiante nesses casos.
+
+9.2 Exigir privilégio administrativo
+
+Se a aplicação depende disso, documente e valide no boot.
+
+Se estiver sem privilégio:
+
+aborta cedo
+
+mensagem clara
+
+nada de meio pipeline
+
+10. Consolidação da UX técnica
+10.1 Progress bar oficial
+
+Ela já existe na prática. Agora precisa ser tratada como parte do contrato.
+
+Etapas oficiais:
+
+0% INIT / lock
+
+10% SNAPSHOT refresh + identidade
+
+25% PRECHECK guardian
+
+35% IPC start
+
+70% IPC end
+
+85% Snapshot refresh pós
+
+95% Verify evidência
+
+100% Commit/release
+
+Não mudar isso sem necessidade, porque isso já virou linguagem do sistema.
+
+10.2 Mensagens finais
+
+Mensagens de erro devem sempre sair com:
+
+código
+
+camada
+
+mensagem humana útil
+
+Exemplo bom:
+
+[MS-FMT-004] verify: Cluster FAT32 deve ser 32KB
+
+Isso está excelente. Curto, técnico, acionável.
+
+11. Checklist operacional final
+
+Aqui vai a versão que você pode literalmente marcar.
+
+Código
+
+ fat32_process.ps1 sincronizado com versão validada
+
+ xfat_process.ps1 sincronizado com versão validada
+
+ powershell_runner.py endurecido para timeout/kill tree
+
+ contrato JSON dos workers congelado
+
+ contrato de parâmetros Python → PowerShell congelado
+
+Política
+
+ FAT32 fixado em 32KB e validado
+
+ exFAT com política final definida
+
+ estado READY condicionado ao contrato completo
+
+ GPT → MBR validado e documentado
+
+Testes
+
+ teste manual oficial executado e salvo
+
+ test_pipeline.py robusto
+
+ suíte unitária mínima expandida
+
+ stress test executado após congelamento dos workers
+
+Repositório
+
+ limpar __pycache__
+
+ limpar logs transitórios
+
+ criar .gitignore
+
+ separar artefatos de validação
+
+ gerar snapshot limpo do projeto
+
+Documentação
+
+ README
+
+ arquitetura
+
+ tabela de erros
+
+ marco bluepoint
+
+ política de escopo
+
+Segurança
+
+ bloqueio de disco interno validado
+
+ exigência/admin check validado
+
+ comportamento sob erro documentado
