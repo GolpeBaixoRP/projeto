@@ -1,3 +1,5 @@
+import time
+
 from core.disk_manager import DiskManager
 from models.pipeline_error import PipelineError
 from services.physical_identity_guardian import GuardianObserver, PhysicalIdentityFactory
@@ -53,25 +55,163 @@ class OperationController:
         finally:
             self.audit.record("GUARDIAN_SHUTDOWN", guardian.report(guardian.shutdown(operation_id=operation_id)))
 
-    def _verify_post_conditions(self, refreshed_disk, filesystem, ipc_data):
+    def _verify_post_conditions(self, refreshed_disk, filesystem, ipc_data, operation_id):
+        disk_number = getattr(refreshed_disk, "number", None)
         if str(getattr(refreshed_disk, "partition_style", "")).upper() != "MBR":
-            raise PipelineError("MS-VFY-001", "verify", "PartitionStyle deve ser MBR", {"found": getattr(refreshed_disk, "partition_style", None)})
+            found = getattr(refreshed_disk, "partition_style", None)
+            raise PipelineError(
+                "MS-VFY-001",
+                "verify",
+                "PartitionStyle divergente do esperado",
+                {"expected": "MBR", "found": found},
+                substep="partition_style",
+                expected="MBR",
+                found=found,
+                disk_number=disk_number,
+                operation_id=operation_id,
+            )
 
         parts = getattr(refreshed_disk, "partitions", []) or []
         vols = getattr(refreshed_disk, "volumes", []) or []
-        if len(parts) != 1 or not vols:
-            raise PipelineError("MS-VFY-002", "verify", "Partição/volume ausente após sucesso", {"partition_count": len(parts), "volume_count": len(vols)})
+        if len(parts) != 1:
+            raise PipelineError(
+                "MS-VFY-005",
+                "verify",
+                "Quantidade de partições inesperada",
+                {"expected": 1, "found": len(parts)},
+                substep="partition_count",
+                expected=1,
+                found=len(parts),
+                disk_number=disk_number,
+                operation_id=operation_id,
+            )
+        if not vols:
+            raise PipelineError(
+                "MS-VFY-002",
+                "verify",
+                "Volume ausente após execução do worker",
+                {"expected": "volume presente", "found": "sem volumes"},
+                substep="volume_presence",
+                expected="volume presente",
+                found="sem volumes",
+                disk_number=disk_number,
+                operation_id=operation_id,
+            )
+
+        drive_letter = str((ipc_data or {}).get("DriveLetter") or (vols[0].get("DriveLetter") if vols else "") or "").strip().upper()
+        if not drive_letter:
+            raise PipelineError(
+                "MS-VOL-001",
+                "verify",
+                "Letra de unidade ausente após operação",
+                {"expected": "drive letter", "found": "vazio"},
+                substep="drive_letter",
+                expected="drive letter",
+                found="vazio",
+                disk_number=disk_number,
+                operation_id=operation_id,
+            )
 
         fs_expected = (filesystem or "").upper()
         fs_found = str((ipc_data or {}).get("FileSystem") or (vols[0].get("FileSystem") if vols else "")).upper()
         if fs_found != fs_expected:
-            code = "MS-FMT-001" if fs_expected == "FAT32" else "MS-FMT-002"
-            raise PipelineError(code, "verify", "Filesystem divergente", {"expected": fs_expected, "found": fs_found})
+            raise PipelineError(
+                "MS-VFY-003",
+                "verify",
+                "Filesystem divergente",
+                {"expected": fs_expected, "found": fs_found},
+                substep="filesystem",
+                expected=fs_expected,
+                found=fs_found,
+                disk_number=disk_number,
+                drive_letter=drive_letter,
+                operation_id=operation_id,
+            )
 
         if fs_expected == "FAT32":
             block_size = (ipc_data or {}).get("BlockSize")
             if int(block_size or 0) != 32768:
-                raise PipelineError("MS-FMT-004", "verify", "Cluster FAT32 deve ser 32KB", {"block_size": block_size})
+                raise PipelineError(
+                    "MS-VFY-004",
+                    "verify",
+                    "BlockSize FAT32 divergente da política",
+                    {"expected": 32768, "found": block_size},
+                    substep="block_size",
+                    expected=32768,
+                    found=block_size,
+                    disk_number=disk_number,
+                    drive_letter=drive_letter,
+                    operation_id=operation_id,
+                )
+
+        worker_success = bool((ipc_data or {}).get("Success", False))
+        if not worker_success:
+            raise PipelineError(
+                "MS-VFY-006",
+                "verify",
+                "Sucesso reportado incompatível com evidência final",
+                {"expected": True, "found": worker_success},
+                substep="success_contract",
+                expected=True,
+                found=worker_success,
+                disk_number=disk_number,
+                drive_letter=drive_letter,
+                operation_id=operation_id,
+            )
+
+    def _commit_barrier(self, disk_number, filesystem, operation_id):
+        time.sleep(0.3)
+        barrier_snapshot = self.disk_manager.refresh()
+
+        stable_disk = next((d for d in barrier_snapshot if d.number == disk_number), None)
+        if stable_disk is None and self.selected_identity is not None:
+            for d in barrier_snapshot:
+                if getattr(d, "serial_number", "") == self.selected_identity.serial_number or getattr(d, "unique_id", "") == self.selected_identity.unique_id:
+                    stable_disk = d
+                    break
+
+        if stable_disk is None:
+            raise PipelineError(
+                "MS-VFY-006",
+                "verify",
+                "Commit barrier falhou: disco não encontrado após verify",
+                {"expected": "disco estável", "found": "ausente"},
+                substep="commit_barrier",
+                expected="disco estável",
+                found="ausente",
+                disk_number=disk_number,
+                operation_id=operation_id,
+            )
+
+        parts = getattr(stable_disk, "partitions", []) or []
+        vols = getattr(stable_disk, "volumes", []) or []
+        stable_fs = str((vols[0].get("FileSystem") if vols else "") or "").upper()
+        stable_letter = str((vols[0].get("DriveLetter") if vols else "") or "").strip()
+
+        if str(getattr(stable_disk, "partition_style", "")).upper() != "MBR" or not parts or not vols or not stable_letter or stable_fs != (filesystem or "").upper():
+            raise PipelineError(
+                "MS-VFY-006",
+                "verify",
+                "Commit barrier falhou: estado final instável após verify",
+                {
+                    "expected": {"partition_style": "MBR", "volume": True, "drive_letter": True, "filesystem": (filesystem or "").upper()},
+                    "found": {
+                        "partition_style": getattr(stable_disk, "partition_style", None),
+                        "partition_count": len(parts),
+                        "volume_count": len(vols),
+                        "drive_letter": stable_letter or None,
+                        "filesystem": stable_fs,
+                    },
+                },
+                substep="commit_barrier",
+                expected="estado estável pós-verify",
+                found="estado divergente",
+                disk_number=disk_number,
+                drive_letter=stable_letter or None,
+                operation_id=operation_id,
+            )
+
+        self.snapshot = barrier_snapshot
 
     def execute_full_format(self, filesystem):
         guardian = GuardianObserver()
@@ -81,6 +221,7 @@ class OperationController:
             if not self.selected_disk or not self.selected_identity:
                 raise RuntimeError("Nenhum disco selecionado.")
             self.audit.record("PIPELINE_EXECUTE_START", {"disk": self.selected_disk.number, "filesystem": filesystem})
+            self.audit.record("operation_start", {"disk": self.selected_disk.number, "filesystem": filesystem}, operation_id=operation_id, stage="pipeline")
 
             self.progress.set(10, "SNAPSHOT refresh + identidade")
             latest_snapshot = self.disk_manager.refresh()
@@ -118,12 +259,16 @@ class OperationController:
                 raise PipelineError("MS-GRD-001", "postcheck", "Falha de identidade física", {"violations": identity_check["violations"]})
 
             self.progress.set(95, "Verify evidência")
-            self._verify_post_conditions(refreshed_disk, filesystem, result.get("data") or {})
+            self._verify_post_conditions(refreshed_disk, filesystem, result.get("data") or {}, operation_id)
+            self.audit.record("operation_verify_success", {"disk": refreshed_disk.number, "filesystem": filesystem}, operation_id=operation_id, stage="verify")
+            self._commit_barrier(refreshed_disk.number, filesystem, operation_id)
+            self.audit.record("commit_barrier_passed", {"disk": refreshed_disk.number, "filesystem": filesystem}, operation_id=operation_id, stage="verify")
 
             self.selected_disk = None
             self.selected_identity = None
             self.locked = False
             self.progress.set(100, "Commit/release")
+            self.audit.record("operation_commit", {"disk": result.get("disk"), "result_status": result.get("status")}, operation_id=operation_id, stage="commit")
             self.audit.record("PIPELINE_COMMIT_RELEASE", {"result_status": result.get("status")})
             return result
         except PipelineError as e:

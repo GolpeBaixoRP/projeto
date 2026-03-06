@@ -40,22 +40,26 @@ class RealFormatterService:
 
     def _extract_json(self, output: str) -> str:
         text = (output or "").strip()
+        if not text:
+            raise PipelineError("MS-IPC-001", self.stage, "Worker retornou stdout vazio", {"stdout_tail": ""})
         m = re.search(r"\{.*\}", text, flags=re.DOTALL)
         if not m:
-            raise PipelineError("MS-RUN-003", self.stage, "Worker sem JSON válido", {"stdout_tail": text[-500:]})
+            raise PipelineError("MS-IPC-002", self.stage, "JSON não encontrado no stdout do worker", {"stdout_tail": text[-500:]})
         return m.group(0)
 
     def _parse_ipc(self, output: str) -> dict:
+        json_payload = self._extract_json(output)
         try:
-            data = json.loads(self._extract_json(output))
-        except PipelineError:
-            raise
+            data = json.loads(json_payload)
         except Exception as exc:
-            raise PipelineError("MS-RUN-003", self.stage, "Worker retornou JSON inválido", {"stdout_tail": (output or "")[-500:]}) from exc
+            raise PipelineError("MS-IPC-003", self.stage, "JSON inválido retornado pelo worker", {"stdout_tail": (output or "")[-500:]}) from exc
+
+        if not isinstance(data, dict):
+            raise PipelineError("MS-IPC-006", self.stage, "Schema IPC inesperado", {"found_type": type(data).__name__})
 
         missing = sorted(self.required_ipc_keys.difference(data.keys()))
         if missing:
-            raise PipelineError("MS-RUN-003", self.stage, "IPC JSON inválido", {"missing": missing})
+            raise PipelineError("MS-IPC-004", self.stage, "Campos obrigatórios ausentes no IPC", {"missing": missing})
         return data
 
     def format_disk(self, disk, filesystem):
@@ -70,25 +74,32 @@ class RealFormatterService:
             "-BusType", str(getattr(disk, "bus_type", "") or ""),
             "-LocationPath", str(getattr(disk, "location_path", "") or ""),
         ]
-        self.audit.record("IPC_START", {"script": str(worker_path), "args": args, "disk": int(disk.number)})
-        result = run_powershell_capture(script_path=str(worker_path), args=args, timeout=240)
+        operation_id = f"fmt-ipc-{int(disk.number)}"
+        self.audit.record("IPC_START", {"script": str(worker_path), "args": args, "disk": int(disk.number), "operation_id": operation_id})
+        result = run_powershell_capture(script_path=str(worker_path), args=args, timeout=240, operation_id=operation_id)
         self.audit.record("IPC_END", {
             "script": str(worker_path),
             "exit_code": result.exit_code,
             "duration_ms": result.duration_ms,
             "stdout_tail": result.stdout[-500:],
             "stderr_tail": result.stderr[-500:],
+            "operation_id": operation_id,
         })
 
         if result.exit_code != 0:
-            raise PipelineError("MS-RUN-003", self.stage, "PowerShell execution failed", {"exit_code": result.exit_code, "stderr": result.stderr})
+            raise PipelineError(
+                "MS-RUN-003",
+                self.stage,
+                "Processo PowerShell finalizou com erro",
+                {"exit_code": result.exit_code, "stderr_tail": result.stderr[-500:], "stdout_tail": result.stdout[-500:]},
+            )
 
         ipc_data = self._parse_ipc(result.stdout)
         if not ipc_data.get("Success", False):
             raise PipelineError(
-                ipc_data.get("PipelineErrorCode") or "MS-RUN-003",
+                ipc_data.get("PipelineErrorCode") or "MS-IPC-005",
                 self.stage,
-                ipc_data.get("ErrorMessage") or "Worker reported failure",
+                ipc_data.get("ErrorMessage") or "Worker reportou falha",
                 {"ipc": ipc_data},
             )
 

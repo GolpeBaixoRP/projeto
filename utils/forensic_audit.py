@@ -12,15 +12,51 @@ class ForensicAuditTrail:
         os.makedirs(self.root_dir, exist_ok=True)
         self.path = os.path.join(self.root_dir, "forensic_audit.jsonl")
 
-    def record(self, event: str, payload: Dict[str, Any], *, error_code: Optional[str] = None, stage: Optional[str] = None, severity: Optional[str] = None, details: Optional[Dict[str, Any]] = None) -> None:
+    @staticmethod
+    def _tail(value: Optional[str], max_len: int = 500) -> Optional[str]:
+        if value is None:
+            return None
+        text = str(value)
+        return text[-max_len:]
+
+    def record(
+        self,
+        event: str,
+        payload: Dict[str, Any],
+        *,
+        error_code: Optional[str] = None,
+        stage: Optional[str] = None,
+        severity: Optional[str] = None,
+        details: Optional[Dict[str, Any]] = None,
+        operation_id: Optional[str] = None,
+        substep: Optional[str] = None,
+        disk_number: Optional[int] = None,
+        drive_letter: Optional[str] = None,
+        expected: Optional[Any] = None,
+        found: Optional[Any] = None,
+        duration_ms: Optional[int] = None,
+        stdout_tail: Optional[str] = None,
+        stderr_tail: Optional[str] = None,
+    ) -> None:
+        now = time.time()
         row = {
-            "ts": time.time(),
+            "ts": now,
+            "timestamp": now,
             "event": event,
-            "payload": payload,
+            "payload": payload or {},
             "error_code": error_code,
             "stage": stage,
             "severity": severity,
             "details": details,
+            "operation_id": operation_id,
+            "substep": substep,
+            "disk_number": disk_number,
+            "drive_letter": drive_letter,
+            "expected": expected,
+            "found": found,
+            "duration_ms": duration_ms,
+            "stdout_tail": self._tail(stdout_tail),
+            "stderr_tail": self._tail(stderr_tail),
         }
         try:
             with open(self.path, "a", encoding="utf-8") as f:
